@@ -1,8 +1,8 @@
-from typing import Protocol, Dict
+from typing import Protocol
 
 
 class MetadataStripper(Protocol):
-    def inspect(self, data: bytes) -> Dict:
+    def inspect(self, data: bytes) -> dict:
         #  Анализирует файл и возвращает информацию о метаданных
         ...
 

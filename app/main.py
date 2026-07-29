@@ -1,15 +1,16 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from typing import Annotated
+
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import Response
-from pydantic import BaseModel
 from PIL import UnidentifiedImageError
 from PIL.Image import DecompressionBombError
+from pydantic import BaseModel
 
+from app.core.config import MAX_FILE_SIZE
+from app.core.security import validate_file_signature
 from app.strippers.jpeg import JpegStripper
 from app.strippers.png import PngStripper
-from app.core.security import validate_file_signature
-from app.core.config import MAX_FILE_SIZE
-
 
 app = FastAPI(title="FlatTag API", description="API для удаления EXIF и других метаданных из изображений", version="1.0.0",)
 
@@ -59,7 +60,7 @@ async def health_check():
 
 
 @app.post("/inspect", response_model=InspectResponse, tags=["Analysis"])
-async def inspect_file(file: UploadFile = File(...)):
+async def inspect_file(file: Annotated[UploadFile, File()]):
     #  Показывает, какие метаданные есть в файле, ничего не удаляя
     file_bytes = await read_limited(file)
     real_content_type = validate_file_signature(file_bytes)
@@ -89,7 +90,7 @@ async def inspect_file(file: UploadFile = File(...)):
         }
     },
 )
-async def clean_file(file: UploadFile = File(...)):
+async def clean_file(file: Annotated[UploadFile, File()]):
     #  Принимает файл, определяет формат, удаляет метаданные и возвращает очищенную версию
     file_bytes = await read_limited(file)
     real_content_type = validate_file_signature(file_bytes)

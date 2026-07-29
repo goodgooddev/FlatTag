@@ -1,6 +1,6 @@
 import io
+
 from PIL import Image, ImageOps
-from app.strippers.base import MetadataStripper
 
 
 class JpegStripper:

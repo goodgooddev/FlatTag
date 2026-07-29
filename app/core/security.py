@@ -1,6 +1,5 @@
 from fastapi import HTTPException
 
-
 MAGIC_BYTES = {
     b"\xFF\xD8\xFF": "image/jpeg",
     b"\x89PNG\r\n\x1a\n": "image/png",
