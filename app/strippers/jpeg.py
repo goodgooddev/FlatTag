@@ -1,5 +1,5 @@
 import io
-from PIL import Image
+from PIL import Image, ImageOps
 from app.strippers.base import MetadataStripper
 
 
@@ -17,6 +17,7 @@ class JpegStripper:
     def strip(self, data: bytes) -> bytes:
         #  Удаляет метаданные путем полного ре-энкодинга пикселей
         with Image.open(io.BytesIO(data)) as img:
+            img = ImageOps.exif_transpose(img)
             clean_img = Image.new(img.mode, img.size)
             clean_img.paste(img)
             output = io.BytesIO()

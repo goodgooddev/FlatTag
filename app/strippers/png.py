@@ -16,6 +16,8 @@ class PngStripper:
     def strip(self, data: bytes) -> bytes:
         #  Удаляет метаданные путем полного ре-энкодинга пикселей
         with Image.open(io.BytesIO(data)) as img:
+            if img.mode == "P":
+                img = img.convert("RGBA" if "transparency" in img.info else "RGB")
             raw_pixels = list(img.getdata())
             clean_img = Image.new(img.mode, img.size)
             clean_img.putdata(raw_pixels)
